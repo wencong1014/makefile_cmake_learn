@@ -78,12 +78,12 @@ LDFLAGS =
 # 定义源文件目录和测试目录
 SRC_DIR = src
 TEST_DIR = tests
-OBJ_DIR = obj
 BUILD_DIR = build
+DIST_DIR = dist
 
 # 定义最终生成的可执行文件名称
-TARGET = $(BUILD_DIR)/math_app
-TEST_TARGET = $(BUILD_DIR)/math_test
+TARGET = $(DIST_DIR)/math_app
+TEST_TARGET = $(DIST_DIR)/math_test
 
 # 使用通配符查找所有源文件
 SRCS = $(wildcard $(SRC_DIR)/*.cpp)
@@ -91,13 +91,13 @@ SRCS = $(wildcard $(SRC_DIR)/*.cpp)
 TEST_SRCS = $(wildcard $(TEST_DIR)/*.cpp) $(filter-out $(SRC_DIR)/main.cpp, $(SRCS))
 
 # 将源文件列表中的.cpp文件替换为obj目录下的.o文件（对象文件）
-OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
+OBJS = $(SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/%.o)
 # 同理，测试对象文件
-# TEST_OBJS = $(TEST_SRCS:%.cpp=$(OBJ_DIR)/%.o) 
-TEST_OBJS = $(filter-out $(OBJ_DIR)/main.o, $(OBJS)) $(TEST_DIR)/test_math.cpp:$(OBJ_DIR)/test_math.o
+# TEST_OBJS = $(TEST_SRCS:%.cpp=$(BUILD_DIR)/%.o) 
+TEST_OBJS = $(filter-out $(BUILD_DIR)/main.o, $(OBJS)) $(TEST_DIR)/test_math.cpp:$(BUILD_DIR)/test_math.o
 # 依赖文件，每个.o文件对应一个.d文件，里面记录了该源文件的头文件依赖
 # DEPS = $(OBJS:.o=.d) $(TEST_OBJS:.o=.d)
-DEPS = $(OBJS:.o=.d) $(patsubst $(TEST_DIR)/%.cpp, $(OBJ_DIR)/%.d, $(wildcard $(TEST_DIR)/*.cpp))
+DEPS = $(OBJS:.o=.d) $(patsubst $(TEST_DIR)/%.cpp, $(BUILD_DIR)/%.d, $(wildcard $(TEST_DIR)/*.cpp))
 
 # 包含所有的依赖文件，如果存在的话。减号表示如果文件不存在也不报错
 -include $(DEPS)
@@ -112,24 +112,24 @@ $(TARGET): $(OBJS)
 
 # 链接测试程序：依赖所有测试对象文件，生成测试可执行文件
 # $(TEST_TARGET): $(TEST_OBJS) $(OBJS)
-$(TEST_TARGET): $(filter-out $(OBJ_DIR)/main.o, $(OBJS)) $(OBJ_DIR)/test_math.o
+$(TEST_TARGET): $(filter-out $(BUILD_DIR)/main.o, $(OBJS)) $(BUILD_DIR)/test_math.o
 	@mkdir -p $(dir $@)    # 确保目标目录存在
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 # 编译规则：将.cpp文件编译成.o文件，同时生成依赖文件
 # $< 表示第一个依赖（即源文件），$@ 表示目标文件（即对象文件）
 # 编译命令中的 -MMD -MP 会自动生成.d依赖文件，其中包含该.cpp文件依赖的头文件
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)    # 确保目标目录存在
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(OBJ_DIR)/%.o: $(TEST_DIR)/%.cpp #src/math_utils.cpp
+$(BUILD_DIR)/%.o: $(TEST_DIR)/%.cpp #src/math_utils.cpp
 	@mkdir -p $(dir $@)    # 确保目标目录存在
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 # 清理命令：删除构建目录和生成的可执行文件
 clean:
-	rm -rf $(BUILD_DIR) $(OBJ_DIR)  # $(TARGET) $(TEST_TARGET)
+	rm -rf $(DIST_DIR)/* $(BUILD_DIR)/*  # $(TARGET) $(TEST_TARGET)
 
 # 测试命令：先构建测试程序，然后运行
 test: $(TEST_TARGET)

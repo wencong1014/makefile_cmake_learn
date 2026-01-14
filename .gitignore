@@ -1,0 +1,15 @@
+# 忽略所有目标文件.o
+*.o
+
+# 忽略所有依赖文件.d
+*.d
+
+# 忽略dist目录下的文件
+dist/**/*
+
+# 忽略build目录下的文件
+build/**/*
+
+# 忽略IDE配置文件
+.vscode/
+.code-workspace

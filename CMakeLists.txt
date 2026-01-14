@@ -1,20 +1,20 @@
 cmake_minimum_required(VERSION 3.10)
 project(MathProject VERSION 1.0.0)
 
-# ÉèÖÃC++±ê×¼
+# è®¾ç½®C++æ ‡å‡†
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# °üº¬Ä¿Â¼
+# åŒ…å«ç›®å½•
 include_directories(include)
 
-# Ìí¼Ó¿ÉÖ´ĞĞÎÄ¼ş
+# æ·»åŠ å¯æ‰§è¡Œæ–‡ä»¶
 add_executable(math_app 
     src/main.cpp
     src/math_utils.cpp
 )
 
-# Ìí¼Ó²âÊÔ¿ÉÖ´ĞĞÎÄ¼ş
+# æ·»åŠ æµ‹è¯•å¯æ‰§è¡Œæ–‡ä»¶
 add_executable(math_test
     tests/test_math.cpp
     src/math_utils.cpp

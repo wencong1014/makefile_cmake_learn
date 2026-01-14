@@ -12,4 +12,4 @@ build/**/*
 
 # ºöÂÔIDEÅäÖÃÎÄ¼ş
 .vscode/
-.code-workspace
+*.code-workspace
